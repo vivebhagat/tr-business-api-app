@@ -7,13 +7,9 @@
 
   <ItemGroup>
     <Compile Remove="App_Data\**" />
-    <Compile Remove="webapp\**" />
     <Content Remove="App_Data\**" />
-    <Content Remove="webapp\**" />
     <EmbeddedResource Remove="App_Data\**" />
-    <EmbeddedResource Remove="webapp\**" />
     <None Remove="App_Data\**" />
-    <None Remove="webapp\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +26,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
     <PackageReference Include="Dapper" Version="2.0.143" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageReference Include="MediatR" Version="12.1.1" />

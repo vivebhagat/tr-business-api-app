@@ -17,12 +17,12 @@ internal class Program
         var configuration = builder.Configuration;
 
         builder.Services.AddIdentity<BaseApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
-      //  builder.Services.AddDbContext<IAuthDbContext, AuthDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("AuthConnection")));
-      //  builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>( options => options.UseLazyLoadingProxies().LogTo(Console.WriteLine).UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+       //builder.Services.AddDbContext<IAuthDbContext, AuthDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("AuthConnection")));
+       // builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>( options => options.UseLazyLoadingProxies().LogTo(Console.WriteLine).UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             
 
         builder.Services.AddDbContext<IAuthDbContext, AuthDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostAuthConnection")));
-        builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostDefaultConnection")));
+        builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("ZRKE")));
         builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostDefaultConnection1")));
 
         var jwtSettings = configuration.GetSection("JWT");
@@ -77,7 +77,7 @@ internal class Program
         builder.Services.AddMemoryCache();
         builder.Services.LoadServices();
 
-        var app = builder.Build();
+         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {

@@ -12,7 +12,7 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public virtual Property Property { get; set; }
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }
-        public decimal PurchasePrice { get; set; }
+        public double PurchasePrice { get; set; }
         public ContractStatus Status { get; set; }
         public DateTime SaleDate { get; set; }
         public DateTime? ApprovalDate { get; set; }

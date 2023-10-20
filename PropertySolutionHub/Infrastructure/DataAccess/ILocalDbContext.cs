@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Update;
 using PropertySolutionHub.Domain.Entities.Auth;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Domain.Entities.Lease;
+using PropertySolutionHub.Domain.Entities.Setup;
 using PropertySolutionHub.Domain.Entities.Shared;
 using PropertySolutionHub.Domain.Entities.Users;
 using static Dapper.SqlMapper;
@@ -29,6 +30,7 @@ namespace PropertySolutionHub.Infrastructure.DataAccess
 
         DbSet<ContractRequest> ContractRequests { get; set; }
         DbSet<Contract> Contracts { get; set; }
+        DbSet<Organization> Organizations { get; set; }
 
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         int SaveChanges();

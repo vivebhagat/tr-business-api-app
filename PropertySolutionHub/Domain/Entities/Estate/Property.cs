@@ -1,4 +1,5 @@
 ﻿using PropertySolutionHub.Domain.Entities.Shared;
+using PropertySolutionHub.Domain.Entities.Users;
 using System.ComponentModel.DataAnnotations;
 
 namespace PropertySolutionHub.Domain.Entities.Estate
@@ -12,6 +13,8 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public string Description { get; set; }
         public string Url { get; set; }
         public double Price { get; set; }
+        public virtual BusinessUser PropertyManager { get; set; }
+        public int? PropertyManagerId { get; set; }
         public PropertyType Type { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime? ConstructionDate { get; set; }

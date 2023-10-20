@@ -4,7 +4,6 @@ using MediatR;
 using PropertySolutionHub.Application.Estate.ContractRequestComponent.Command;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Domain.Helper;
-using PropertySolutionHub.Application.Estate.ContractRequestComponent.Command;
 
 namespace PropertySolutionHub.Application.Estate.ContractRequestComponent.Handler
 {

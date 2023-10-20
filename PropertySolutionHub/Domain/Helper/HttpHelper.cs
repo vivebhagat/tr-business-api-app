@@ -18,7 +18,7 @@ namespace PropertySolutionHub.Domain.Helper
         public HttpHelper(IConfiguration configuration)
         {
             this._configuration = configuration;
-            BaseAddress = _configuration["CustomerStoreUrl"];// //"https://localhost:7281"; //
+            BaseAddress = _configuration["CustomerStoreUrl"];// "https://localhost:7281"; //
         }
 
         public async Task<T> GetAsync<T>(string apiUrl, string domainKey)

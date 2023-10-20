@@ -12,8 +12,8 @@ using PropertySolutionHub.Infrastructure.DataAccess;
 namespace PropertySolutionHub.Infrastructure.Migrations.Local
 {
     [DbContext(typeof(LocalDbContext))]
-    [Migration("20231007032207_PROP_0010")]
-    partial class PROP_0010
+    [Migration("20231020110731_PROP_0012")]
+    partial class PROP_0012
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -58,8 +58,8 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("PurchasePrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("PurchasePrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("RemoteId")
                         .HasColumnType("int");
@@ -112,8 +112,8 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<int>("PropertyId")
                         .HasColumnType("int");
 
-                    b.Property<decimal>("ProposedPurchasePrice")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("ProposedPurchasePrice")
+                        .HasColumnType("float");
 
                     b.Property<int>("RemoteId")
                         .HasColumnType("int");
@@ -208,6 +208,9 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
+                    b.Property<int?>("PropertyManagerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("RemoteId")
                         .HasColumnType("int");
 
@@ -227,6 +230,8 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("PropertyManagerId");
 
                     b.ToTable("Property", "data");
                 });
@@ -413,6 +418,37 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.HasIndex("PropertyId");
 
                     b.ToTable("LeaseRequests", "data");
+                });
+
+            modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Setup.Organization", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ArchiveDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("ModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Organizations", "data");
                 });
 
             modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Users.Admin", b =>
@@ -753,6 +789,15 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                         .IsRequired();
 
                     b.Navigation("Property");
+                });
+
+            modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Estate.Property", b =>
+                {
+                    b.HasOne("PropertySolutionHub.Domain.Entities.Users.BusinessUser", "PropertyManager")
+                        .WithMany()
+                        .HasForeignKey("PropertyManagerId");
+
+                    b.Navigation("PropertyManager");
                 });
 
             modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Estate.PropertyImage", b =>

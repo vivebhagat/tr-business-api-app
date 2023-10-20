@@ -11,7 +11,7 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public virtual Property Property { get; set; }
         public string CustomerName { get; set; }
         public int CustomerId { get; set; }
-        public decimal ProposedPurchasePrice { get; set; }
+        public double ProposedPurchasePrice { get; set; }
         public ContractRequestStatus Status { get; set; }
         public string Note { get; set; }
         public bool IsApproved { get; set; }

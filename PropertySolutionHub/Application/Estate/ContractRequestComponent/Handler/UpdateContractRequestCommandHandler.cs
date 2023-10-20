@@ -32,7 +32,7 @@ namespace PropertySolutionHub.Application.Estate.ContractRequestComponent.Handle
                     int tempPropertyId = request.ContractRequest.PropertyId;
                     request.ContractRequest.PropertyId = contractRequest.Property.RemoteId;
                     string postData = JsonConvert.SerializeObject(request);
-                    var result  = _contractRequestRepository.UpdateRemoteContractRequest(postData);
+                    await _contractRequestRepository.UpdateRemoteContractRequest(postData);
                     request.ContractRequest.PropertyId = tempPropertyId;
                 }
 

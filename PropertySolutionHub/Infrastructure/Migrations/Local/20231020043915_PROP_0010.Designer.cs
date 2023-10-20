@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PropertySolutionHub.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using PropertySolutionHub.Infrastructure.DataAccess;
 namespace PropertySolutionHub.Infrastructure.Migrations.Local
 {
     [DbContext(typeof(LocalDbContext))]
-    partial class LocalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231020043915_PROP_0010")]
+    partial class PROP_0010
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,6 +154,9 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<int>("Bedrooms")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BusinessUserId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("ConstructionDate")
                         .HasColumnType("datetime2");
 
@@ -205,9 +211,6 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<int?>("PropertyManagerId")
-                        .HasColumnType("int");
-
                     b.Property<int>("RemoteId")
                         .HasColumnType("int");
 
@@ -228,7 +231,7 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PropertyManagerId");
+                    b.HasIndex("BusinessUserId");
 
                     b.ToTable("Property", "data");
                 });
@@ -415,37 +418,6 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.HasIndex("PropertyId");
 
                     b.ToTable("LeaseRequests", "data");
-                });
-
-            modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Setup.Organization", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime?>("ArchiveDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Url")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Organizations", "data");
                 });
 
             modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Users.Admin", b =>
@@ -790,11 +762,11 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
 
             modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Estate.Property", b =>
                 {
-                    b.HasOne("PropertySolutionHub.Domain.Entities.Users.BusinessUser", "PropertyManager")
+                    b.HasOne("PropertySolutionHub.Domain.Entities.Users.BusinessUser", "BusinessUser")
                         .WithMany()
-                        .HasForeignKey("PropertyManagerId");
+                        .HasForeignKey("BusinessUserId");
 
-                    b.Navigation("PropertyManager");
+                    b.Navigation("BusinessUser");
                 });
 
             modelBuilder.Entity("PropertySolutionHub.Domain.Entities.Estate.PropertyImage", b =>

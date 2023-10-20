@@ -10,7 +10,7 @@ using PropertySolutionHub.Domain.Entities.Users;
 namespace PropertySolutionHub.Api.Controllers.Users
 {
     [Route("api/[controller]")]
-    [ApiController, CustomAuthFilter]
+    [ApiController]
     public class BusinessUserController : ControllerBase
     {
         private readonly IMediator _mediator;
