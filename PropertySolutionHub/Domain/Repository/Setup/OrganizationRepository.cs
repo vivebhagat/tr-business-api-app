@@ -13,7 +13,7 @@ namespace OrganizationSolutionHub.Domain.Repository.Estate
         Task<int> CreateOrganization(Organization Organization);
         Task<int> DeleteOrganization(int Id);
         Task<Organization> GetOrganizationById(int Id);
-        Task<Organization> UpdateOrganization(Organization Organization);
+        Task<Organization> UpdateOrganization(Organization Organization, IFormFile file);
         Task<List<Organization>> GetAllOrganizations();
     }
 
@@ -23,13 +23,17 @@ namespace OrganizationSolutionHub.Domain.Repository.Estate
         ILocalDbContext db;
         IAuthDbContext _authDb;
         private readonly string DomainKey = string.Empty;
+        IHttpContextAccessor _httpContextAccessor;
+        IStorageHelper _storageHelper;
 
-        public OrganizationRepository(DapperContext dapperContext, IMemoryCache cache, IAuthDbContext authDb) : base(cache, authDb)
+        public OrganizationRepository(DapperContext dapperContext, IMemoryCache cache, IAuthDbContext authDb, IHttpContextAccessor httpContextAccessor, IStorageHelper storageHelper) : base(cache, authDb)
         {
             _cache = cache;
             _authDb = authDb;
             this.db = new DbFactory<LocalDbContext>(GetConnectionString()).CreateDbContext();
             DomainKey = GetDomainKey();
+            _httpContextAccessor = httpContextAccessor;
+            _storageHelper = storageHelper;
         }
 
         public void Validate(Organization Organization)
@@ -60,7 +64,7 @@ namespace OrganizationSolutionHub.Domain.Repository.Estate
             }
         }
 
-        public async Task<Organization> UpdateOrganization(Organization Organization)
+        public async Task<Organization> UpdateOrganization(Organization Organization, IFormFile file)
         {
             try
             {
@@ -68,6 +72,18 @@ namespace OrganizationSolutionHub.Domain.Repository.Estate
                 Organization.ModifiedDate = DateTime.Now;
                 db.SetStateAsModified(Organization);
                 await db.SaveChangesAsync();
+
+                if (file != null)
+                {
+                    string uploadedImageFileUrl = string.Empty;
+                    _storageHelper.UploadImage(Organization.Id, _storageHelper.GetStoragePath(DomainKey.ToString(), "Logo", "Org"), _storageHelper.GetUrlPath(_httpContextAccessor.HttpContext, DomainKey, "Logo", "Org"), "Org", file, true, ref uploadedImageFileUrl);
+
+                    if (!string.IsNullOrEmpty(uploadedImageFileUrl))
+                    {
+                        Organization.Url = uploadedImageFileUrl;
+                        db.SaveChanges();
+                    }
+                }
                 return Organization;
             }
             catch (Exception ex)

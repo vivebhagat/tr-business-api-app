@@ -113,7 +113,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 string emailBody = LoadEmailTemplate("BizApplicationTemplate.html");
                 _logger.LogError("Is templete empty" + string.IsNullOrEmpty(emailBody));
 
-                emailBody = emailBody.Replace("{User}", businessUser.Email);
+                emailBody = emailBody.Replace("{User}", businessUser.FirstName);
                 emailBody = emailBody.Replace("{CustomerName}", customer.FirstName + ' ' + customer.LastName);
                 emailBody = emailBody.Replace("{Name}", property.Name);
                 emailBody = emailBody.Replace("{Url}", property.Url);
@@ -158,7 +158,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 string emailBody = LoadEmailTemplate("ApplicationStatusUpdateTemplate.html");
                 _logger.LogError("Is templete empty" + string.IsNullOrEmpty(emailBody));
 
-                emailBody = emailBody.Replace("{User}", customer.Email);
+                emailBody = emailBody.Replace("{User}", customer.FirstName);
                 emailBody = emailBody.Replace("{Name}", property.Name);
                 emailBody = emailBody.Replace("{Url}", property.Url);
                 emailBody = emailBody.Replace("{Price}", String.Format("{0:C}", property.Price));
@@ -244,7 +244,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
 
         public async Task<List<ContractRequest>> GetAllContractRequests()
         {
-            return await db.ContractRequests.Where(m => m.ArchiveDate == null).ToListAsync();
+            return await db.ContractRequests.Where(m => m.ArchiveDate == null).OrderByDescending(m => m.CreatedDate).ToListAsync();
         }
 
         public async Task<ContractRequest> GetContractRequestById(int Id)

@@ -21,7 +21,7 @@ namespace PropertySolutionHub.Application.Users.Org.Handler
         {
             try
             {
-                return await _organization.UpdateOrganization(request.Organization);
+                return await _organization.UpdateOrganization(request.Organization, request.OrgImage);
             }
             catch (Exception ex)
             {

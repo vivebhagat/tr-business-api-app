@@ -9,5 +9,7 @@ namespace PropertySolutionHub.Application.Setup.Org.Command
     public class UpdateOrganizationCommand : IRequest<Organization>
     {
         public Organization Organization { get; set; }
+        public IFormFile OrgImage { get; set; }
+
     }
 }

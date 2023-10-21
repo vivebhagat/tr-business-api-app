@@ -1,8 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using PropertySolutionCustomerPortal.Infrastructure.Attribute;
 using PropertySolutionHub.Application.Estate.Org.Query;
-using PropertySolutionHub.Application.Estate.PropertyComponent.Query;
+using PropertySolutionHub.Application.Estate.PropertyComponent.Command;
 using PropertySolutionHub.Application.Setup.Org.Command;
 using PropertySolutionHub.Application.Users.CustomerToRoleMapComponent.Query;
 using PropertySolutionHub.Domain.Entities.Setup;
@@ -22,15 +23,22 @@ namespace PropertySolutionHub.Api.Controllers.Setup.Org
         }
 
         [HttpPost("[action]")]
-        public async Task<Organization> EditOrganization(UpdateOrganizationCommand @object)
+        public async Task<Organization> EditOrganization([FromForm] string modelString, [FromForm] IFormFile file)
         {
-            return await _mediator.Send(new UpdateOrganizationCommand { Organization = @object.Organization });
+            UpdateOrganizationCommand @object = JsonConvert.DeserializeObject<UpdateOrganizationCommand>(modelString);
+
+            if (@object == null)
+            {
+                throw new Exception("Invalid input parameters.");
+            }
+
+            return await _mediator.Send(new UpdateOrganizationCommand { Organization = @object.Organization, OrgImage = file });
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<Organization> GetOrganizationById(GetOrganizationByIdQuery @object)
+        public async Task<Organization> GetOrganizationById(int Id)
         {
-            return await _mediator.Send(new GetOrganizationByIdQuery { Id = @object.Id});
+            return await _mediator.Send(new GetOrganizationByIdQuery { Id = Id});
         }
 
         [HttpGet("[action]")]
