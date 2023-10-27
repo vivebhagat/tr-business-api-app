@@ -11,6 +11,7 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public int RemoteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public string UnitType { get; set; }
         public string Url { get; set; }
         public double Price { get; set; }
         public virtual BusinessUser PropertyManager { get; set; }

@@ -29,5 +29,11 @@ namespace PropertySolutionHub.Api.Controllers.External
         {
             return await _mediator.Send(new WithdrawContractRequestCommand { Id = @object.Id, DomainKey = @object.DomainKey });
         }
+
+        [HttpGet("[action]/{id}")]
+        public async Task<bool> DeleteContractRequest(int id)
+        {
+            return await _mediator.Send(new DeleteContractRequestCommand { Id = id });
+        }
     }
 }

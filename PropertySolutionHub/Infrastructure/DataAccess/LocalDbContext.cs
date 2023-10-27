@@ -49,6 +49,13 @@ namespace PropertySolutionHub.Infrastructure.DataAccess
         public DbSet<Organization> Organizations { get; set; }
 
 
+        public DbSet<Community> Communities { get; set; }
+        public DbSet<CommunityToPropertyMap> CommunityToPropertyMaps { get; set; }
+        public DbSet<CommunityType> CommunityTypes { get; set; }
+        public DbSet<ConstructionStatus> ConstructionStatus { get; set; }
+
+
+
 
 
         public DbSet<TEntity> Set<TEntity>() where TEntity : class

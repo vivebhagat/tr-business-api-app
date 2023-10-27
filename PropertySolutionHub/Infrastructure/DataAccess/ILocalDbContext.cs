@@ -32,6 +32,11 @@ namespace PropertySolutionHub.Infrastructure.DataAccess
         DbSet<Contract> Contracts { get; set; }
         DbSet<Organization> Organizations { get; set; }
 
+        DbSet<Community> Communities { get; set; }
+        DbSet<CommunityToPropertyMap> CommunityToPropertyMaps { get; set; }
+        DbSet<CommunityType> CommunityTypes { get; set; }
+        DbSet<ConstructionStatus> ConstructionStatus { get; set; }
+
         DbSet<TEntity> Set<TEntity>() where TEntity : class;
         int SaveChanges();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

@@ -58,14 +58,6 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
             ValidationHelper.CheckException(contractRequest.ProposedPurchasePrice == 0, "Proposed price should be positive.");
         }
 
-
-        private string LoadEmailTemplate(string templateFileName)
-        {
-            string templatePath = Path.Combine(_environment.ContentRootPath, "Files", templateFileName);
-            using StreamReader reader = new StreamReader(templatePath);
-            return reader.ReadToEnd();
-        }
-
         public async Task<int> CreateContractRequest(ContractRequest contractRequest)
         {
 
@@ -74,7 +66,8 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 Validate(contractRequest);
                 Property property = db.Property.Where(m => m.RemoteId == contractRequest.PropertyId && m.ArchiveDate == null).FirstOrDefault();
 
-                bool exists = db.ContractRequests.Any(m => m.CustomerId == contractRequest.CustomerId && m.PropertyId == property.Id && m.Status != ContractRequestStatus.Withdraw && m.ArchiveDate == null);
+                bool exists = db.ContractRequests.Any(m => m.CustomerId == contractRequest.CustomerId && m.PropertyId == contractRequest.PropertyId
+                        && m.Status != ContractRequestStatus.Rejected && m.Status != ContractRequestStatus.Withdraw && m.ArchiveDate == null);
 
                 if (exists)
                     throw new Exception("Duplicate application found.");
@@ -83,8 +76,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 contractRequest.PropertyId = property.Id;
                 db.ContractRequests.Add(contractRequest);
                 await db.SaveChangesAsync();
-
-                SendNewApplicationEmail(contractRequest.Id, property.Id);
+                await SendNewApplicationEmail(contractRequest.Id, property.Id);
 
                 return contractRequest.Id;
             }
@@ -99,20 +91,53 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
             try
             {
                 ContractRequest contractRequest = db.ContractRequests.Where(m => m.Id == contractRequestId && m.ArchiveDate == null).FirstOrDefault();
+
+                if (contractRequest == null)
+                    return false;
+
                 Property property = db.Property.Where(m => m.Id == propertyId && m.ArchiveDate == null).FirstOrDefault();
+
+
+                if (property == null)
+                    return false;
+
                 BusinessUser businessUser = db.BusinessUsers.Where(m => m.Id == property.PropertyManagerId && m.ArchiveDate == null).FirstOrDefault();
-                Customer customer = await _httpHelper.GetAsync<Customer>("/api/CustomerDefault/GetCustomerById/" + contractRequest.CustomerId, DomainKey);
 
                 if (businessUser == null)
                     return false;
+
+                Customer customer = await _httpHelper.GetAsync<Customer>("/api/CustomerDefault/GetCustomerById/" + contractRequest.CustomerId, DomainKey);
 
                 if (customer == null)
                     return false;
 
 
                 string emailBody = LoadEmailTemplate("BizApplicationTemplate.html");
-                _logger.LogError("Is templete empty" + string.IsNullOrEmpty(emailBody));
 
+                if (string.IsNullOrEmpty(emailBody))
+                    return false;
+
+                emailBody = ReplaceNewApplicationTokens(emailBody, customer, businessUser, property, contractRequest);
+
+                if (string.IsNullOrEmpty(emailBody))
+                    return false;
+
+                if (!await Send(customer.Email, "New Application", emailBody))
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error  sending email. " + ex.Message);
+            }
+
+        }
+
+        private string ReplaceNewApplicationTokens(string emailBody, Customer customer, BusinessUser businessUser, Property property, ContractRequest request)
+        {
+            try
+            {
                 emailBody = emailBody.Replace("{User}", businessUser.FirstName);
                 emailBody = emailBody.Replace("{CustomerName}", customer.FirstName + ' ' + customer.LastName);
                 emailBody = emailBody.Replace("{Name}", property.Name);
@@ -122,28 +147,14 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 emailBody = emailBody.Replace("{Bedrooms}", property.Bedrooms.ToString());
                 emailBody = emailBody.Replace("{Bathrooms}", property.Bathrooms.ToString());
                 emailBody = emailBody.Replace("{Area}", property.Area.ToString("N0"));
-                emailBody = emailBody.Replace("{Status}", contractRequest.Status.ToString());
+                emailBody = emailBody.Replace("{Status}", request.Status.ToString());
 
-                _logger.LogError("No error replacing words");
-
-                var emailRequest = new EmailRequest
-                {
-                    RecieverAddresses = new List<string>(),
-                    PrimaryRecieverAddress = businessUser.Email,
-                    Subject = "New Application",
-                    Body = emailBody
-                };
-
-                await _azureEmailService.SendEmail(emailRequest);
-
-                return true;
+                return emailBody;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError("Send email logs error" + ex.Message);
-                throw new Exception("Error adding Request. " + ex.Message);
+                return null;
             }
-
         }
 
         public async Task<bool> SendApplicationStatusUpdateEmail(int contractRequestId, int customerId, int propertyId)
@@ -156,8 +167,30 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 Customer customer = await _httpHelper.GetAsync<Customer>("/api/CustomerDefault/GetCustomerById/" + customerId, DomainKey);
 
                 string emailBody = LoadEmailTemplate("ApplicationStatusUpdateTemplate.html");
-                _logger.LogError("Is templete empty" + string.IsNullOrEmpty(emailBody));
 
+                if (string.IsNullOrEmpty(emailBody))
+                    return false;
+
+                emailBody = ReplaceApplicationUpdateTokens(emailBody, customer, property, contractRequest);
+
+                if (string.IsNullOrEmpty(emailBody))
+                    return false;
+
+                if (!await Send(customer.Email, "Trilineas Application Update", emailBody))
+                    return false;
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error sending email. " + ex.Message);
+            }
+        }
+
+        private string ReplaceApplicationUpdateTokens(string emailBody, Customer customer, Property property, ContractRequest request)
+        {
+            try
+            {
                 emailBody = emailBody.Replace("{User}", customer.FirstName);
                 emailBody = emailBody.Replace("{Name}", property.Name);
                 emailBody = emailBody.Replace("{Url}", property.Url);
@@ -166,15 +199,38 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
                 emailBody = emailBody.Replace("{Bedrooms}", property.Bedrooms.ToString());
                 emailBody = emailBody.Replace("{Bathrooms}", property.Bathrooms.ToString());
                 emailBody = emailBody.Replace("{Area}", property.Area.ToString("N0"));
-                emailBody = emailBody.Replace("{Status}", contractRequest.Status.ToString());
+                emailBody = emailBody.Replace("{Status}", request.Status.ToString());
 
-                _logger.LogError("No error replacing words");
+                return emailBody;
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        private string LoadEmailTemplate(string templateFileName)
+        {
+            try
+            {
+                string templatePath = Path.Combine(_environment.ContentRootPath, "Files", templateFileName);
+                using StreamReader reader = new(templatePath);
+                return reader.ReadToEnd();
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
 
+        private async Task<bool> Send(string email, string subject, string emailBody)
+        {
+            try
+            {
                 var emailRequest = new EmailRequest
                 {
                     RecieverAddresses = new List<string>(),
-                    PrimaryRecieverAddress = customer.Email,
-                    Subject = "Trilineas Application Update",
+                    PrimaryRecieverAddress = email,
+                    Subject = subject,
                     Body = emailBody
                 };
 
@@ -182,12 +238,10 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
 
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                _logger.LogError("Send email logs error" + ex.Message);
-                throw new Exception("Error adding Request. " + ex.Message);
+                return false;
             }
-
         }
 
         public async Task<ContractRequest> UpdateContractRequest(ContractRequest contractRequest)
@@ -213,7 +267,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
 
                 var req = await db.ContractRequests.Where(m => m.Id == contractRequest.Id && m.ArchiveDate == null).Include(m => m.Property).FirstOrDefaultAsync();
 
-                SendApplicationStatusUpdateEmail(req.Id, (int)req.Property.PropertyManagerId, req.PropertyId);
+                await SendApplicationStatusUpdateEmail(req.Id, (int)req.Property.PropertyManagerId, req.PropertyId);
 
                 return contractRequest;
             }
@@ -244,7 +298,7 @@ namespace ContractRequestSolutionHub.Domain.Repository.Estate
 
         public async Task<List<ContractRequest>> GetAllContractRequests()
         {
-            return await db.ContractRequests.Where(m => m.ArchiveDate == null).OrderByDescending(m => m.CreatedDate).ToListAsync();
+            return await db.ContractRequests.Where(m => m.ArchiveDate == null).OrderByDescending(m => m.Id).ToListAsync();
         }
 
         public async Task<ContractRequest> GetContractRequestById(int Id)
