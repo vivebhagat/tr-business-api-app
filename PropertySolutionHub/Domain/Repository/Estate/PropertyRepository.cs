@@ -44,7 +44,7 @@ namespace PropertySolutionHub.Domain.Repository.Estate
             ValidationHelper.CheckIsNull(property);
             ValidationHelper.CheckException(string.IsNullOrWhiteSpace(property.Name), "Name is required.");
             ValidationHelper.CheckException(property.Price <= 0, "Price should be a positive value.");
-            ValidationHelper.ValidateEnum(property.Type, "Type");
+            ValidationHelper.CheckException(string.IsNullOrWhiteSpace(property.UnitType), "Unit type is required.");
             ValidationHelper.ValidateEnum(property.Status, "Status");
             ValidationHelper.CheckException(property.PropertyManagerId == 0, "Manager is required.");
             ValidationHelper.CheckException(property.Area <= 0, "Area should be a positive value.");

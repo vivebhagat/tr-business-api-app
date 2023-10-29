@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PropertySolutionHub.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using PropertySolutionHub.Infrastructure.DataAccess;
 namespace PropertySolutionHub.Infrastructure.Migrations.Local
 {
     [DbContext(typeof(LocalDbContext))]
-    partial class LocalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231028054716_PROP_0014")]
+    partial class PROP_0014
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -100,9 +103,6 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                     b.Property<double>("PriceTo")
                         .HasColumnType("float");
 
-                    b.Property<int>("RemoteId")
-                        .HasColumnType("int");
-
                     b.Property<int>("StatusId")
                         .HasColumnType("int");
 
@@ -141,9 +141,6 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RemoteId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

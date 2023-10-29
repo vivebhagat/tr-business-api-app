@@ -16,7 +16,6 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public double Price { get; set; }
         public virtual BusinessUser PropertyManager { get; set; }
         public int? PropertyManagerId { get; set; }
-        public PropertyType Type { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime? ConstructionDate { get; set; }
         public PropertyStatus Status { get; set; }

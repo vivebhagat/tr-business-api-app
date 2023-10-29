@@ -6,7 +6,7 @@ using PropertySolutionHub.Application.Estate.CommunityTypeComponent.Command;
 using PropertySolutionHub.Application.Estate.CommunityTypeComponent.Query;
 using PropertySolutionHub.Domain.Entities.Estate;
 
-namespace CommunityTypeSolutionHub.Api.Controllers.Estate
+namespace PropertySolutionHub.Api.Controllers.Estate
 {
     [Route("api/[controller]")]
     [ApiController, CustomAuthFilter]

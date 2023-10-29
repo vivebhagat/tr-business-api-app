@@ -7,10 +7,13 @@ namespace PropertySolutionHub.Domain.Entities.Estate
     public class Community : IBaseEntity
     {
         public int Id { get; set; }
+        public int RemoteId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public virtual Organization Organization { get; set; }
         public int OrganizationId { get; set; }
+        public string Url { get; set; }
+
         public double PriceFrom { get; set; }
         public double PriceTo { get; set; }
         public int BedFrom { get; set; }
