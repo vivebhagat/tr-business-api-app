@@ -21,17 +21,14 @@ namespace PropertySolutionHub.Api.Controllers.Users
         }
 
         [HttpGet("[action]/{id}")]
-        public async Task<IActionResult> Logout(string id)
+        public async Task<ActionResult<bool>> Logout(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("Invalid input parameters.");
+                return new BadRequestObjectResult("Invalid input parameters.");
 
             bool result = await _mediator.Send(new BusinessUserLogoutCommand { UserId = id });
 
-            if (result)
-                return Ok(new { result });
-            else
-                return Unauthorized();
+            return result? Ok(new { result }): Problem("Error while logging out the requested session.");
         }
 
         [HttpPost("[action]")]

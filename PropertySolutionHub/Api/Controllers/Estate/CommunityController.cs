@@ -28,18 +28,24 @@ namespace PropertySolutionHub.Api.Controllers.Estate
         }
 
         [HttpPost("[action]")]
-        public async Task<Community> EditCommunity([FromForm] string modelString, [FromForm] IFormFile file)
+        public async Task<ActionResult<Community>> EditCommunity([FromForm] string modelString, [FromForm] IFormFile file)
         {
-            UpdateCommunityCommand @object = JsonConvert.DeserializeObject<UpdateCommunityCommand>(modelString);
+            UpdateCommunityCommand @object = null;
+            try
+            {
+                @object = JsonConvert.DeserializeObject<UpdateCommunityCommand>(modelString);
+            }
+            catch (JsonSerializationException exe)
+            {
+                return new BadRequestObjectResult("Request is invalid.");
+            }
 
             if (@object == null)
             {
-                throw new Exception("Invalid input parameters.");
+                return new BadRequestObjectResult("Request is invaiid or empty.");
             }
 
-            var res = await _mediator.Send(new UpdateCommunityCommand { Community = @object.Community, CommunityImage = file });
-
-            return res;
+            return await _mediator.Send(new UpdateCommunityCommand { Community = @object.Community, CommunityImage = file });
         }
 
         [HttpGet("[action]")]

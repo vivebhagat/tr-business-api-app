@@ -10,6 +10,8 @@
     <Content Remove="App_Data\**" />
     <EmbeddedResource Remove="App_Data\**" />
     <None Remove="App_Data\**" />
+    <None Remove="Util\" />
+    <None Remove="Util\Common\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +51,8 @@
     <Folder Include="Domain\ValueObjects\" />
     <Folder Include="Infrastructure\Migrations\Identity\" />
     <Folder Include="Infrastructure\Migrations\Local\" />
+    <Folder Include="Util\" />
+    <Folder Include="Util\Common\" />
   </ItemGroup>
 
 </Project>

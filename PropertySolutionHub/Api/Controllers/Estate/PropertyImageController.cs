@@ -22,13 +22,23 @@ namespace PropertyImageSolutionHub.Api.Controllers.Estate
         }
 
         [HttpPost("[action]")]
-        public async Task<int> AddPropertyImage([FromForm] string modelstring, [FromForm] IFormFile file)
+        public async Task<ActionResult<int>> AddPropertyImage([FromForm] string modelstring, [FromForm] IFormFile file)
         {
-            CreatePropertyImageCommand @object = JsonConvert.DeserializeObject<CreatePropertyImageCommand>(modelstring);
+
+            CreatePropertyImageCommand @object = null;
+
+            try
+            {
+                JsonConvert.DeserializeObject<CreatePropertyImageCommand>(modelstring);
+            }
+            catch (JsonSerializationException exe)
+            {
+                return new BadRequestObjectResult("Request is invalid.");
+            }
 
             if (@object == null)
             {
-                throw new Exception("Invalid input parameters.");
+                return new BadRequestObjectResult("Request is invalid or empty.");
             }
 
             return await _mediator.Send(new CreatePropertyImageCommand { PropertyImage = file, Name = @object.Name, Id = @object.Id });

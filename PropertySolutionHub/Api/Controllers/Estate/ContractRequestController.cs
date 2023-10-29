@@ -4,6 +4,7 @@ using PropertySolutionCustomerPortal.Infrastructure.Attribute;
 using PropertySolutionHub.Application.Estate.ContractRequestComponent.Command;
 using PropertySolutionHub.Application.Estate.ContractRequestComponent.Query;
 using PropertySolutionHub.Domain.Entities.Estate;
+using PropertySolutionHub.Util.Common;
 
 namespace PropertySolutionHub.Api.Controllers.Estate
 {
@@ -45,7 +46,7 @@ namespace PropertySolutionHub.Api.Controllers.Estate
         [HttpGet("[action]")]
         public IEnumerable<Tuple<int, string>> GetContractRequestStatus()
         {
-            return Enum.GetValues(typeof(ContractRequestStatus)).Cast<ContractRequestStatus>().Select(value => new Tuple<int, string>((int)value, Enum.GetName(typeof(ContractRequestStatus), value)));
+            return EnumHelper.GetEnumValues<ContractRequestStatus>();
         }
     }
 }
