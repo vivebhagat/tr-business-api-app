@@ -43,19 +43,16 @@ namespace PropertySolutionHub.Api.Controllers.Standard
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> RoleSelect([FromForm] string role, [FromForm] string refreshToken)
+        public async Task<ActionResult<RoleAuthResponse>> RoleSelect([FromForm] string role, [FromForm] string refreshToken)
         {
             if (string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(refreshToken))
-                return Unauthorized();
+                return new BadRequestObjectResult("Request is invalid.");
 
             RoleSelectionRequestDto roleSelectionRequestDto = new() { Role = role, RefreshToken = refreshToken };
 
             var result = await _mediator.Send(new BusinessUserRoleCommand { RoleSelectionRequestDto = roleSelectionRequestDto });
 
-            if (result != null)
-                return Ok(new { result });
-            else
-                return Unauthorized();
+            return result != null? Ok(new { result }): Unauthorized();
         }
     }
 }

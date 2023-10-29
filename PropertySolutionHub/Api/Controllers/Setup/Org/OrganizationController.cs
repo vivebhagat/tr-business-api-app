@@ -23,13 +23,21 @@ namespace PropertySolutionHub.Api.Controllers.Setup.Org
         }
 
         [HttpPost("[action]")]
-        public async Task<Organization> EditOrganization([FromForm] string modelString, [FromForm] IFormFile file)
+        public async Task<ActionResult<Organization>> EditOrganization([FromForm] string modelString, [FromForm] IFormFile file)
         {
-            UpdateOrganizationCommand @object = JsonConvert.DeserializeObject<UpdateOrganizationCommand>(modelString);
+            UpdateOrganizationCommand @object = null;
+            try
+            {
+                @object = JsonConvert.DeserializeObject<UpdateOrganizationCommand>(modelString);
+            }
+            catch (JsonSerializationException exe)
+            {
+                return new BadRequestObjectResult("Request is invalid.");
+            }
 
             if (@object == null)
             {
-                throw new Exception("Invalid input parameters.");
+                return new BadRequestObjectResult("Request is invalid or empty.");
             }
 
             return await _mediator.Send(new UpdateOrganizationCommand { Organization = @object.Organization, OrgImage = file });

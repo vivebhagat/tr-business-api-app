@@ -27,30 +27,24 @@ namespace PropertySolutionHub.Api.Controllers.Users
         public async Task<IActionResult> Login([FromForm] string username, [FromForm] string password)
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-                throw new ArgumentNullException("Invalid input parameters.");
+                return new BadRequestObjectResult("Invalid input parameters.");
 
             LoginRequestDto loginRequestDto = new() { UserName = username, PassWord = password };
 
-            RoleAuthResponse result = await _mediator.Send(new CustomerLoginCommand { LoginRequestDto = loginRequestDto });
+            var result = await _mediator.Send(new CustomerLoginCommand { LoginRequestDto = loginRequestDto });
 
-            if (result != null)
-                return Ok(new { result });
-            else
-                return Unauthorized();
+            return result != null? Ok(new { result }): Unauthorized();
         }
 
         [HttpGet("[action]/{id}"), Authorize]
         public async Task<IActionResult> Logout(string id)
         {
             if (string.IsNullOrWhiteSpace(id))
-                throw new ArgumentNullException("Invalid input parameters.");
+                return new BadRequestObjectResult("Invalid input parameter.");
 
             bool result = await _mediator.Send(new CustomerLogoutCommand { UserId = id });
 
-            if (result)
-                return Ok(new { result });
-            else
-                return Unauthorized();
+            return result? Ok(new { result }): Problem("Error while logging out the requested session.");
         }
 
 
@@ -58,16 +52,13 @@ namespace PropertySolutionHub.Api.Controllers.Users
         public async Task<IActionResult> RoleSelect([FromForm] string role, [FromForm] string refreshToken)
         {
             if (string.IsNullOrWhiteSpace(role) || string.IsNullOrWhiteSpace(refreshToken))
-                return Unauthorized();
+                return new BadRequestObjectResult("Invalid input parameters.");
 
             RoleSelectionRequestDto roleSelectionRequestDto = new() { Role = role, RefreshToken = refreshToken }; 
 
             var result = await _mediator.Send(new CustomerRoleCommand { RoleSelectionRequestDto = roleSelectionRequestDto });
 
-            if (result != null)
-                return Ok(new { result });
-            else
-                return Unauthorized();
+            return result != null? Ok(new { result }): Unauthorized();
         }
 
         [HttpGet("[action]"), Authorize]
