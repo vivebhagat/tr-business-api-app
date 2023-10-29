@@ -1,10 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using PropertySolutionHub.Infrastructure.Attribute;
-using PropertySolutionHub.Api.Dto.Estate;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Command;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Query;
+using PropertySolutionHub.Application.Estate.CommunityComponent.Notification;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionCustomerPortal.Infrastructure.Attribute;
 
@@ -22,9 +21,16 @@ namespace PropertySolutionHub.Api.Controllers.Estate
         }
 
         [HttpPost("[action]")]
-        public async Task<int> AddCommunity(CreateCommunityCommand @object)
+        public async Task<IActionResult> AddCommunity(CreateCommunityCommand @object)
         {
-            return await _mediator.Send(new CreateCommunityCommand { Community = @object.Community });
+            var result = await _mediator.Send(new CreateCommunityCommand { Community = @object.Community });
+
+            if (result == 0)
+                return Problem("Error while creating the community.");
+
+            await _mediator.Publish<CommunityCreatedEvent>(new CommunityCreatedEvent(@object.Community, result));
+
+            return Ok(result);
         }
 
         [HttpPost("[action]")]

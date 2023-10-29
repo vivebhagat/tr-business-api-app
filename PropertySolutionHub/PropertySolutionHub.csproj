@@ -12,6 +12,7 @@
     <None Remove="App_Data\**" />
     <None Remove="Util\" />
     <None Remove="Util\Common\" />
+    <None Remove="Application\Estate\CommunityComponent\Notification\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -53,6 +54,7 @@
     <Folder Include="Infrastructure\Migrations\Local\" />
     <Folder Include="Util\" />
     <Folder Include="Util\Common\" />
+    <Folder Include="Application\Estate\CommunityComponent\Notification\" />
   </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
 ﻿using PropertySolutionHub.Domain.Entities.Estate;
-using PropertySolutionHub.Domain.Entities.Users;
 
 namespace PropertySolutionHub.Api.Dto.Estate
 {
