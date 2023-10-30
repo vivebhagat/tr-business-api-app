@@ -20,6 +20,7 @@ namespace PropertySolutionHub.Domain.Entities.Estate
         public DateTime? ConstructionDate { get; set; }
         public PropertyStatus Status { get; set; }
         public bool IsFeatured { get; set; }
+        public bool IsPublished { get; set; }
         public string Address { get; set; }
         public string ZipCode { get; set; }
         public int Bedrooms { get; set; }

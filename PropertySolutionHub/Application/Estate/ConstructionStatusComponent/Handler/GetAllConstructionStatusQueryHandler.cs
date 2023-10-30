@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using ConstructionStatusSolutionHub.Domain.Repository.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using PropertySolutionHub.Application.Estate.ConstructionStatusComponent.Query;
 using PropertySolutionHub.Application.Estate.PropertyComponent.Command;

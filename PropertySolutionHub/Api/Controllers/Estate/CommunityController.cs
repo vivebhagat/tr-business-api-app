@@ -21,9 +21,24 @@ namespace PropertySolutionHub.Api.Controllers.Estate
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> AddCommunity(CreateCommunityCommand @object)
+        public async Task<IActionResult> AddCommunity([FromForm] string modelString, [FromForm] IFormFile file)
         {
-            var result = await _mediator.Send(new CreateCommunityCommand { Community = @object.Community });
+            CreateCommunityCommand @object = null;
+            try
+            {
+                @object = JsonConvert.DeserializeObject<CreateCommunityCommand>(modelString);
+            }
+            catch (JsonSerializationException ex)
+            {
+                return new BadRequestObjectResult("Request is invalid.");
+            }
+
+            if (@object == null)
+            {
+                return new BadRequestObjectResult("Request is invalid or empty.");
+            }
+
+            var result = await _mediator.Send(new CreateCommunityCommand { Community = @object.Community, CommunityToPropertyMapList = @object.CommunityToPropertyMapList, CommunityImage = file  });
 
             if (result == 0)
                 return Problem("Error while creating the community.");
@@ -41,27 +56,27 @@ namespace PropertySolutionHub.Api.Controllers.Estate
             {
                 @object = JsonConvert.DeserializeObject<UpdateCommunityCommand>(modelString);
             }
-            catch (JsonSerializationException exe)
+            catch (JsonSerializationException ex)
             {
                 return new BadRequestObjectResult("Request is invalid.");
             }
 
             if (@object == null)
             {
-                return new BadRequestObjectResult("Request is invaiid or empty.");
+                return new BadRequestObjectResult("Request is invalid or empty.");
             }
 
-            return await _mediator.Send(new UpdateCommunityCommand { Community = @object.Community, CommunityImage = file });
+            return await _mediator.Send(new UpdateCommunityCommand { Community = @object.Community, CommunityToPropertyMapList = @object.CommunityToPropertyMapList, CommunityImage = file });
         }
 
         [HttpGet("[action]")]
-        public async Task<List<Community>> GetAllProperties()
+        public async Task<List<Community>> GetAllCommunities()
         {
-            return await _mediator.Send(new GetAllCommunititesQuery());
+            return await _mediator.Send(new GetAllCommunitiesQuery());
         }
 
         [HttpGet("[action]")]
-        public async Task<List<Community>> GetAllFeaturedProperties()
+        public async Task<List<Community>> GetAllFeaturedCommunities()
         {
             return await _mediator.Send(new GetAllFeaturedCommunitiesQuery());
         }

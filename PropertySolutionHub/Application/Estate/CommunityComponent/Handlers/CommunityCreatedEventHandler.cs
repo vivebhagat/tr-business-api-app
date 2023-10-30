@@ -1,4 +1,4 @@
-﻿using CommunitySolutionHub.Domain.Repository.Estate;
+﻿using PropertySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using Newtonsoft.Json;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Notification;
@@ -7,8 +7,8 @@ namespace PropertySolutionHub.Application.Estate.CommunityComponent.Handlers
 {
     public class CommunityCreatedEventHandler: INotificationHandler<CommunityCreatedEvent>
 	{
-        private CommunityRepository _communityRepository;
-        public CommunityCreatedEventHandler(CommunityRepository communityRepository)
+        private ICommunityRepository _communityRepository;
+        public CommunityCreatedEventHandler(ICommunityRepository communityRepository)
 		{
             this._communityRepository = communityRepository;
         }

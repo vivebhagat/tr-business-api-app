@@ -31,7 +31,7 @@ namespace PropertySolutionHub.Api.Controllers.Estate
         }
 
         [HttpGet("GetAll")]
-        public async Task<List<PropertyReview>> GetAllProperties()
+        public async Task<List<PropertyReview>> GetAllCommunities()
         {
             return await _mediator.Send(new GetAllPropertyReviewsQuery());
         }

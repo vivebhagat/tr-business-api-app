@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PropertySolutionHub.Infrastructure.DataAccess;
 
@@ -11,9 +12,11 @@ using PropertySolutionHub.Infrastructure.DataAccess;
 namespace PropertySolutionHub.Infrastructure.Migrations.Local
 {
     [DbContext(typeof(LocalDbContext))]
-    partial class LocalDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231030061443_PROP_0017")]
+    partial class PROP_0017
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -361,9 +364,6 @@ namespace PropertySolutionHub.Infrastructure.Migrations.Local
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsGarage")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsSmokingAllowed")

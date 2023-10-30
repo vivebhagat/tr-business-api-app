@@ -16,6 +16,11 @@ namespace PropertySolutionHub.Domain.MappingProfile
                 cfg.AddProfile<PropertyImageMappingProfile>();
                 cfg.AddProfile<BusinessUserToRoleMapMappingProfile>();
                 cfg.AddProfile<BusinessUserRoleMappingProfile>();
+
+                cfg.AddProfile<CommunityMappingProfile>();
+                cfg.AddProfile<CommunityToPropertyMapMappingProfile>();
+
+
             });
             return config;
         }

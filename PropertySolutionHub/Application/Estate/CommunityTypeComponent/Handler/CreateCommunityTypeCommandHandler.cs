@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CommunityTypeSolutionHub.Domain.Repository.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using Newtonsoft.Json;
 using PropertySolutionHub.Application.Estate.CommunityTypeComponent.Command;

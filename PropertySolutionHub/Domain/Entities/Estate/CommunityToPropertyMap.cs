@@ -6,7 +6,6 @@ namespace PropertySolutionHub.Domain.Entities.Estate
     public class CommunityToPropertyMap : IBaseEntity
     {
         public int Id { get; set; }
-        public int RemoteId { get; set; }
         public virtual Community Community { get; set; }
         public int CommunityId { get; set; }
         public virtual Property Property { get; set; }

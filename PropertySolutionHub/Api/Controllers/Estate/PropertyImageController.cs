@@ -29,7 +29,7 @@ namespace PropertyImageSolutionHub.Api.Controllers.Estate
 
             try
             {
-                JsonConvert.DeserializeObject<CreatePropertyImageCommand>(modelstring);
+                @object = JsonConvert.DeserializeObject<CreatePropertyImageCommand>(modelstring);
             }
             catch (JsonSerializationException exe)
             {

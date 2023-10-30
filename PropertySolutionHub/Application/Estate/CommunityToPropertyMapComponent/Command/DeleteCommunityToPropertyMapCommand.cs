@@ -1,9 +1,9 @@
 ﻿using MediatR;
 
 
-namespace PropertySolutionHub.Application.Estate.CommunityComponent.Command
+namespace PropertySolutionHub.Application.Estate.CommunityToPropertyMapComponent.Command
 {
-    public class DeleteCommunityToProeprtyMapCommand : IRequest<bool>
+    public class DeleteCommunityToPropertyMapCommand : IRequest<bool>
     {
         public int Id { get; set; }
     }

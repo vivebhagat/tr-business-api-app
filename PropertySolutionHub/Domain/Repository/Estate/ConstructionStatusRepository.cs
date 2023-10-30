@@ -6,7 +6,7 @@ using PropertySolutionHub.Domain.Helper;
 using PropertySolutionHub.Domain.Repository;
 using PropertySolutionHub.Infrastructure.DataAccess;
 
-namespace ConstructionStatusSolutionHub.Domain.Repository.Estate
+namespace PropertySolutionHub.Domain.Repository.Estate
 {
     public interface IConstructionStatusRepository : IDynamicDbRepository
     {

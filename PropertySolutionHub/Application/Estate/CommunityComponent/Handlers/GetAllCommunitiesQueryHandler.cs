@@ -1,31 +1,31 @@
 ﻿using AutoMapper;
 using MediatR;
-using CommunitySolutionHub.Domain.Repository.Estate;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Query;
+using PropertySolutionHub.Domain.Repository.Estate;
 
-namespace CommunitySolutionHub.Application.Estate.CommunityComponent.Handler
+namespace PropertySolutionHub.Application.Estate.CommunityComponent.Handler
 {
-    public class GetAllPropertiesQueryHandler : IRequestHandler<GetAllCommunititesQuery, List<Community>>
+    public class GetAllCommunitiesQueryHandler : IRequestHandler<GetAllCommunitiesQuery, List<Community>>
     {
-        private readonly ICommunityRepository _propertyRepository;
+        private readonly ICommunityRepository _communityRepository;
         private readonly IMapper _mapper;
 
-        public GetAllPropertiesQueryHandler(ICommunityRepository propertyRepository, IMapper mapper)
+        public GetAllCommunitiesQueryHandler(ICommunityRepository communityRepository, IMapper mapper)
         {
-            _propertyRepository = propertyRepository;
+            _communityRepository = communityRepository;
             _mapper = mapper;
         }
 
-        public async Task<List<Community>> Handle(GetAllCommunititesQuery request, CancellationToken cancellationToken)
+        public async Task<List<Community>> Handle(GetAllCommunitiesQuery request, CancellationToken cancellationToken)
         {
             try
             {
-                return await _propertyRepository.GetAllCommunities();
+                return await _communityRepository.GetAllCommunities();
             }
             catch (Exception ex)
             {
-                throw new Exception("Error getting property list: " + ex.Message);
+                throw new Exception("Error getting community list: " + ex.Message);
             }
         }
     }

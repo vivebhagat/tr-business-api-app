@@ -1,10 +1,10 @@
 ﻿using MediatR;
 using PropertySolutionHub.Domain.Entities.Estate;
 
-namespace PropertySolutionHub.Application.Estate.CommunityComponent.Command
+namespace PropertySolutionHub.Application.Estate.CommunityToPropertyMapComponent.Command
 {
     public class CreateCommunityToPropertyMapCommand : IRequest<int>
     {
-        public Community Community { get; set; }
+        public CommunityToPropertyMap CommunityToPropertyMap { get; set; }
     }
 }

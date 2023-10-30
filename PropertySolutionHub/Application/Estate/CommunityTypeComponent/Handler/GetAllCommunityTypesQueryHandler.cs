@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using CommunityTypeSolutionHub.Domain.Repository.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using PropertySolutionHub.Application.Estate.CommunityTypeComponent.Query;
 using PropertySolutionHub.Application.Estate.PropertyComponent.Command;
 using PropertySolutionHub.Application.Estate.PropertyComponent.Query;
 using PropertySolutionHub.Domain.Entities.Estate;
-using PropertySolutionHub.Domain.Repository.Estate;
 
 namespace PropertySolutionHub.Application.Estate.CommunityTypeComponent.Handler
 {

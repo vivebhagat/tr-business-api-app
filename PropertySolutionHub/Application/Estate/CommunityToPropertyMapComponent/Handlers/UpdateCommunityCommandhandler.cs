@@ -1,43 +1,36 @@
 ﻿using AutoMapper;
-using CommunitySolutionHub.Domain.Repository.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using Newtonsoft.Json;
-using PropertySolutionHub.Application.Estate.CommunityComponent.Command;
+using PropertySolutionHub.Application.Estate.CommunityToPropertyMapComponent.Command;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Domain.Helper;
 using PropertySolutionHub.Domain.Repository.Estate;
 
 
-namespace PropertySolutionHub.Application.Estate.CommunityComponent.Handler
+namespace PropertySolutionHub.Application.Estate.CommunityToPropertyMapComponent.Handler
 {
-    public class UpdateCommunityCommandHandler : IRequestHandler<UpdateCommunityCommand, Community>
+    public class UpdateCommunityToPropertyMapCommandHandler : IRequestHandler<UpdateCommunityToPropertyMapCommand, CommunityToPropertyMap>
     {
-        private readonly ICommunityRepository _communityRepository;
+        private readonly ICommunityToPropertyMapRepository _communityToPropertyMapRepository;
         private readonly IMapper _mapper;
         IHttpHelper httpHelper;
 
 
-        public UpdateCommunityCommandHandler(ICommunityRepository communityRepository, IMapper mapper, IHttpHelper httpHelper)
+        public UpdateCommunityToPropertyMapCommandHandler(ICommunityToPropertyMapRepository communityToPropertyMapRepository, IMapper mapper, IHttpHelper httpHelper)
         {
-            _communityRepository = communityRepository;
+            _communityToPropertyMapRepository = communityToPropertyMapRepository;
             _mapper = mapper;
             this.httpHelper = httpHelper;
         }
 
-        public async Task<Community> Handle(UpdateCommunityCommand request, CancellationToken cancellationToken)
+        public async Task<CommunityToPropertyMap> Handle(UpdateCommunityToPropertyMapCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var communityEntity = _mapper.Map<Community>(request.Community);
-                Community community = await _communityRepository.UpdateCommunity(communityEntity, request.CommunityImage);
-
-                if (community != null)
-                {
-                    string postData = JsonConvert.SerializeObject(request);
-                    var result = await _communityRepository.UpdateRemoteCommunity(postData);
-                }
-
-                return community;
+                var communityToPropertyMapEntity = _mapper.Map<CommunityToPropertyMap>(request.CommunityToPropertyMap);
+                CommunityToPropertyMap communityToPropertyMap = await _communityToPropertyMapRepository.UpdateCommunityToPropertyMap(communityToPropertyMapEntity);
+                return communityToPropertyMap;
             }
             catch (Exception ex)
             {

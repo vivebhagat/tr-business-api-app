@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Command;
 using PropertySolutionHub.Domain.Helper;
-using CommunitySolutionHub.Domain.Repository.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 
 namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
 {

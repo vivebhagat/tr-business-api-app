@@ -3,7 +3,7 @@ using PropertySolutionHub.Domain.Entities.Estate;
 
 namespace PropertySolutionHub.Application.Estate.CommunityComponent.Query
 {
-    public class GetAllCommunititesQuery : IRequest<List<Community>>
+    public class GetAllCommunitiesQuery : IRequest<List<Community>>
     {
     }
 }

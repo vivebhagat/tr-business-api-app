@@ -1,44 +1,38 @@
 ﻿using AutoMapper;
-using CommunitySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using Newtonsoft.Json;
-using PropertySolutionHub.Application.Estate.CommunityComponent.Command;
+using PropertySolutionHub.Application.Estate.CommunityToPropertyMapComponent.Command;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Domain.Helper;
+using PropertySolutionHub.Domain.Repository.Estate;
 
-namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
+namespace PropertySolutionHub.Application.Users.CommunityToPropertyMapComponent.Handler
 {
-    public class CreateCommunityCommandHandler : IRequestHandler<CreateCommunityCommand, int>
+    public class CreateCommunityToPropertyMapCommandHandler : IRequestHandler<CreateCommunityToPropertyMapCommand, int>
     {
-        private readonly ICommunityRepository _communityRepository;
+        private readonly ICommunityToPropertyMapRepository _communityToPropertyMapRepository;
         private readonly IMapper _mapper;
         IHttpHelper httpHelper;
 
-        public CreateCommunityCommandHandler(ICommunityRepository communityRepository, IMapper mapper, IHttpHelper httpHelper)
+        public CreateCommunityToPropertyMapCommandHandler(ICommunityToPropertyMapRepository communityToPropertyMapRepository, IMapper mapper, IHttpHelper httpHelper)
         {
-            _communityRepository = communityRepository;
+            _communityToPropertyMapRepository = communityToPropertyMapRepository;
             _mapper = mapper;
             this.httpHelper = httpHelper;
         }
 
-        public async Task<int> Handle(CreateCommunityCommand request, CancellationToken cancellationToken)
+        public async Task<int> Handle(CreateCommunityToPropertyMapCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                var communityEntity = _mapper.Map<Community>(request.Community);
-                int communityId = await _communityRepository.CreateCommunity(communityEntity, request.CommunityImage);
+                var communityToPropertyMapEntity = _mapper.Map<CommunityToPropertyMap>(request.CommunityToPropertyMap);
+                int communityToPropertyMapId = await _communityToPropertyMapRepository.CreateCommunityToPropertyMap(communityToPropertyMapEntity);
 
-                if (communityId != 0)
-                {
-                    string postData = JsonConvert.SerializeObject(request);
-                    bool result = await _communityRepository.UpdateRemoteId(postData, communityId);
-                }
-
-                return communityId;
+                return communityToPropertyMapId;
             }
             catch (Exception ex)
             {
-                throw new Exception("Error creating community: " + ex.Message);
+                throw new Exception("Error creating communityToPropertyMap: " + ex.Message);
             }
         }
     }

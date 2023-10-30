@@ -1,10 +1,8 @@
-﻿using CommunityTypeSolutionHub.Domain.Repository.Estate;
-using ConstructionStatusSolutionHub.Domain.Repository.Estate;
+﻿using PropertySolutionHub.Domain.Repository.Estate;
 using ContractRequestSolutionHub.Domain.Repository.Estate;
 using OrganizationSolutionHub.Domain.Repository.Estate;
 using PropertySolutionHub.Domain.Helper;
 using PropertySolutionHub.Domain.Repository.Auth;
-using PropertySolutionHub.Domain.Repository.Estate;
 using PropertySolutionHub.Domain.Repository.Users;
 using PropertySolutionHub.Domain.Service.Email;
 
@@ -36,7 +34,9 @@ namespace PropertySolutionHub.Infrastructure.DataAccess
             services.AddScoped<IContractRequestRepository, ContractRequestRepository>();
             services.AddScoped<IBusinessUserRoleRepository, BusinessUserRoleRepository>();
             services.AddScoped<ICommunityTypeRepository, CommunityTypeRepository>();
+            services.AddScoped<ICommunityToPropertyMapRepository, CommunityToPropertyMapRepository>();
             services.AddScoped<IConstructionStatusRepository, ConstructionStatusRepository>();
+            services.AddScoped<ICommunityRepository, CommunityRepository>();
 
 
         }

@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
-using CommunityTypeSolutionHub.Domain.Repository.Estate;
 using MediatR;
 using Newtonsoft.Json;
 using PropertySolutionHub.Application.Estate.CommunityTypeComponent.Command;
 using PropertySolutionHub.Application.Estate.PropertyComponent.Command;
 using PropertySolutionHub.Domain.Entities.Estate;
+using PropertySolutionHub.Domain.Repository.Estate;
 
 namespace PropertySolutionHub.Application.Estate.CommunityTypeComponent.Handler
 {

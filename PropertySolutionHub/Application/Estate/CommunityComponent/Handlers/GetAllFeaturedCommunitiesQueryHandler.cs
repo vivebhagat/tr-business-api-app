@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using CommunitySolutionHub.Domain.Repository.Estate;
 using MediatR;
 using PropertySolutionHub.Application.Estate.CommunityComponent.Query;
 using PropertySolutionHub.Domain.Entities.Estate;
@@ -7,12 +6,12 @@ using PropertySolutionHub.Domain.Repository.Estate;
 
 namespace PropertySolutionHub.Application.Estate.CommunityComponent.Handlers
 {
-    public class GetAllFeaturedPropertiesQueryHandler : IRequestHandler<GetAllFeaturedCommunitiesQuery, List<Community>>
+    public class GetAllFeaturedCommunitiesQueryHandler : IRequestHandler<GetAllFeaturedCommunitiesQuery, List<Community>>
     {
         private readonly ICommunityRepository _communityRepository;
         private readonly IMapper _mapper;
 
-        public GetAllFeaturedPropertiesQueryHandler(ICommunityRepository communityRepository, IMapper mapper)
+        public GetAllFeaturedCommunitiesQueryHandler(ICommunityRepository communityRepository, IMapper mapper)
         {
             _communityRepository = communityRepository;
             _mapper = mapper;
