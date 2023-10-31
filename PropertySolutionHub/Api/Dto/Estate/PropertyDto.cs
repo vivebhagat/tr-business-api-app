@@ -11,8 +11,9 @@ namespace PropertySolutionHub.Api.Dto.Estate
         public string Description { get; set; }
         public double Price { get; set; }
         public int PropertyManagerId { get; set; }
-        public PropertyType Type { get; set; }
+        public string UnitType { get; set; }
         public bool IsAvailable { get; set; }
+        public bool IsPublished { get; set; }
         public DateTime? ConstructionDate { get; set; }
         public PropertyStatus Status { get; set; }
         public string Address { get; set; }

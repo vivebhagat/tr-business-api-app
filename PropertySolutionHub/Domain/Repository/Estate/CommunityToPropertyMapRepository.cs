@@ -1,6 +1,11 @@
-﻿using Azure.Core;
+﻿using AutoMapper;
+using Azure.Core;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using PropertySolutionHub.Api.Dto.Estate;
+using PropertySolutionHub.Application.Estate.CommunityComponent.Command;
 using PropertySolutionHub.Domain.Entities.Estate;
 using PropertySolutionHub.Domain.Helper;
 using PropertySolutionHub.Domain.Repository;
@@ -11,11 +16,11 @@ namespace PropertySolutionHub.Domain.Repository.Estate
     public interface ICommunityToPropertyMapRepository : IDynamicDbRepository
     {
         Task<int> CreateCommunityToPropertyMap(CommunityToPropertyMap community);
-        Task<bool> DeleteCommunityToPropertyMap(int Id);
+        Task<Community> DeleteCommunityToPropertyMap(int Id);
         Task<List<CommunityToPropertyMap>> GetPropertyListForCommunity(int Id);
         Task<List<CommunityToPropertyMap>> GetAllCommunityToPropertyMaps();
         Task<CommunityToPropertyMap> UpdateCommunityToPropertyMap(CommunityToPropertyMap community);
-        Task<bool> UpdateCommunitySummaryDetails(int Id);
+        Task<Community> UpdateCommunitySummaryDetails(int Id);
     }
 
     public class CommunityToPropertyMapRepository : AbstractDynamicDbRepository, ICommunityToPropertyMapRepository
@@ -25,14 +30,16 @@ namespace PropertySolutionHub.Domain.Repository.Estate
         IAuthDbContext _authDb;
         IHttpHelper _httpHelper;
         private readonly string DomainKey = string.Empty;
+        IMapper _mapper;
 
-        public CommunityToPropertyMapRepository(DapperContext dapperContext, IMemoryCache cache, IAuthDbContext authDb, IHttpHelper httpHelper) : base(cache, authDb)
+        public CommunityToPropertyMapRepository(DapperContext dapperContext, IMemoryCache cache, IAuthDbContext authDb, IHttpHelper httpHelper, IMapper mapper) : base(cache, authDb)
         {
             _cache = cache;
             _authDb = authDb;
             this.db = new DbFactory<LocalDbContext>(GetConnectionString()).CreateDbContext();
             _httpHelper = httpHelper;
             DomainKey = GetDomainKey();
+            _mapper = mapper;
         }
 
         public void Validate(CommunityToPropertyMap communityToPropertyMap)
@@ -86,14 +93,14 @@ namespace PropertySolutionHub.Domain.Repository.Estate
             }
         }
 
-        public async Task<bool> UpdateCommunitySummaryDetails(int Id)
+        public async Task<Community> UpdateCommunitySummaryDetails(int Id)
         {
             try
             {
                 Community community = db.Communities.FirstOrDefault(m => m.Id == Id && m.ArchiveDate == null);
 
                 if (community == null)
-                    return false;
+                    return null;
 
                 List<CommunityToPropertyMap> communityToPropertyMapList = db.CommunityToPropertyMaps
                     .Where(m => m.CommunityId == Id && m.ArchiveDate == null)
@@ -101,47 +108,71 @@ namespace PropertySolutionHub.Domain.Repository.Estate
                     .ToList();
 
                 if (communityToPropertyMapList.Count == 0)
-                    return false;
-
-                community.PriceFrom = communityToPropertyMapList.Min(item => item.Property.Price);
-                community.PriceTo = communityToPropertyMapList.Max(item => item.Property.Price);
-
-                community.BedFrom = communityToPropertyMapList.Min(item => item.Property.Bedrooms);
-                community.BedTo = communityToPropertyMapList.Max(item => item.Property.Bedrooms);
-
-                community.BathFrom = communityToPropertyMapList.Min(item => item.Property.Bathrooms);
-                community.BathTo = communityToPropertyMapList.Max(item => item.Property.Bathrooms);
-
-                community.AreaFrom = (int)communityToPropertyMapList.Min(item => item.Property.Area);
-                community.AreaTo = (int)communityToPropertyMapList.Max(item => item.Property.Area);
-
-
+                {
+                    community.PriceFrom = 0;
+                    community.PriceTo = 0;
+                    community.BedFrom = 0;
+                    community.BedTo = 0;
+                    community.BathFrom = 0;
+                    community.BathTo = 0;
+                    community.AreaFrom = 0;
+                    community.AreaTo = 0;
+                    community.NumberOfUnits = 0;
+                }
+                else
+                {
+                    community.PriceFrom = communityToPropertyMapList.Min(item => item.Property.Price);
+                    community.PriceTo = communityToPropertyMapList.Max(item => item.Property.Price);
+                    community.BedFrom = communityToPropertyMapList.Min(item => item.Property.Bedrooms);
+                    community.BedTo = communityToPropertyMapList.Max(item => item.Property.Bedrooms);
+                    community.BathFrom = communityToPropertyMapList.Min(item => item.Property.Bathrooms);
+                    community.BathTo = communityToPropertyMapList.Max(item => item.Property.Bathrooms);
+                    community.AreaFrom = (int)communityToPropertyMapList.Min(item => item.Property.Area);
+                    community.AreaTo = (int)communityToPropertyMapList.Max(item => item.Property.Area);
+                    community.NumberOfUnits = communityToPropertyMapList.Count;
+                }
                 await db.SaveChangesAsync();
 
-                return true;
+                return community;
             }
             catch (Exception e)
             {
-                return false;
+                return null;
             }
         }
-        public async Task<bool> DeleteCommunityToPropertyMap(int Id)
+
+        public async Task<Community> DeleteCommunityToPropertyMap(int Id)
         {
             try
             {
-                CommunityToPropertyMap community = db.CommunityToPropertyMaps.Where(m => m.Id == Id && m.ArchiveDate == null).FirstOrDefault();
+                CommunityToPropertyMap communityToPropertyMap = db.CommunityToPropertyMaps.Where(m => m.Id == Id && m.ArchiveDate == null).FirstOrDefault();
 
-                if (community == null)
-                    throw new Exception("CommunityToPropertyMap does not exist.");
+                if (communityToPropertyMap == null)
+                    throw new Exception("property does not exist.");
 
-                community.ArchiveDate = DateTime.Now;
+                Community community = db.Communities.Where(m => m.Id == communityToPropertyMap.CommunityId && m.ArchiveDate == null).FirstOrDefault();
+
+                if (IsLastItem(community.Id))
+                    community.IsPublished = false;
+
+                communityToPropertyMap.ArchiveDate = DateTime.Now;
                 await db.SaveChangesAsync();
-                return true;
+
+                return await UpdateCommunitySummaryDetails(community.Id);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error deleting community. " + ex.Message);
+                throw new Exception("Error deleting property. " + ex.Message);
             }
+        }
+
+
+        private bool IsLastItem(int communityId)
+        {
+            int itemCount = db.CommunityToPropertyMaps
+                .Count(m => m.CommunityId == communityId && m.ArchiveDate == null);
+
+            return itemCount == 1;
         }
 
         public async Task<List<CommunityToPropertyMap>> GetAllCommunityToPropertyMaps()

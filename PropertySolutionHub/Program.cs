@@ -18,12 +18,12 @@ internal class Program
 
         builder.Services.AddIdentity<BaseApplicationUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
        // builder.Services.AddDbContext<IAuthDbContext, AuthDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("AuthConnection")));
-       // builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>( options => options.UseLazyLoadingProxies().LogTo(Console.WriteLine).UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+        //builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>( options => options.UseLazyLoadingProxies().LogTo(Console.WriteLine).UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             
 
         builder.Services.AddDbContext<IAuthDbContext, AuthDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostAuthConnection")));
         builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("ZRKE")));
-       builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostDefaultConnection1")));
+        builder.Services.AddDbContext<ILocalDbContext, LocalDbContext>(options => options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("HostDefaultConnection1")));
 
         var jwtSettings = configuration.GetSection("JWT");
         var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]);

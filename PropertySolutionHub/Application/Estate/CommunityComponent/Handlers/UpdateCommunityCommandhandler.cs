@@ -51,7 +51,16 @@ namespace PropertySolutionHub.Application.Estate.CommunityComponent.Handler
                             }
                         }
 
-                        await _communityToPropertyMapRepository.UpdateCommunitySummaryDetails(community.Id);
+                        Community tempCommunity = await _communityToPropertyMapRepository.UpdateCommunitySummaryDetails(community.Id);
+                        request.Community.PriceFrom = tempCommunity.PriceFrom;
+                        request.Community.PriceTo = tempCommunity.PriceFrom;
+                        request.Community.BedFrom = tempCommunity.BedFrom;
+                        request.Community.BedTo = tempCommunity.BedTo;
+                        request.Community.BathFrom = tempCommunity.BathFrom;
+                        request.Community.BathTo = tempCommunity.BathTo;
+                        request.Community.AreaFrom = tempCommunity.AreaFrom;
+                        request.Community.AreaTo = tempCommunity.AreaTo;
+                        request.Community.NumberOfUnits = tempCommunity.NumberOfUnits;
                     }
 
                     string postData = JsonConvert.SerializeObject(request);

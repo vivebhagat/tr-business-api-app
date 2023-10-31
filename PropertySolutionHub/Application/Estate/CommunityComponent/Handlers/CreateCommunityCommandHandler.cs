@@ -27,6 +27,11 @@ namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
         {
             try
             {
+                if (request.CommunityToPropertyMapList.Count == 0)
+                {
+                    throw new Exception("Please add at least one proeprty to create community.");
+                }
+
                 var communityEntity = _mapper.Map<Community>(request.Community);
                 int communityId = await _communityRepository.CreateCommunity(communityEntity, request.CommunityImage);
 
@@ -50,7 +55,17 @@ namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
                             }
                         }
 
-                        await _communityToPropertyMapRepository.UpdateCommunitySummaryDetails(communityId);
+                       Community tempCommunity =  await _communityToPropertyMapRepository.UpdateCommunitySummaryDetails(communityId);
+                        request.Community.PriceFrom = tempCommunity.PriceFrom;
+                        request.Community.PriceTo = tempCommunity.PriceFrom;
+                        request.Community.BedFrom = tempCommunity.BedFrom;
+                        request.Community.BedTo = tempCommunity.BedTo;
+                        request.Community.BathFrom = tempCommunity.BathFrom;
+                        request.Community.BathTo = tempCommunity.BathTo;
+                        request.Community.AreaFrom = tempCommunity.AreaFrom;
+                        request.Community.AreaTo = tempCommunity.AreaTo;
+                        request.Community.NumberOfUnits = tempCommunity.NumberOfUnits;
+
                     }
 
                     string postData = JsonConvert.SerializeObject(request);
