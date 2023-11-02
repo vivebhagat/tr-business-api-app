@@ -49,7 +49,6 @@
   <ItemGroup>
     <Folder Include="Api\Controllers\Shared\" />
     <Folder Include="Api\Dto\Lease\" />
-    <Folder Include="Application\Estate\CommunityToPropertyMapComponent\Query\" />
     <Folder Include="Domain\ValueObjects\" />
     <Folder Include="Infrastructure\Migrations\Identity\" />
     <Folder Include="Infrastructure\Migrations\Local\" />

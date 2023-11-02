@@ -57,7 +57,7 @@ namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
 
                        Community tempCommunity =  await _communityToPropertyMapRepository.UpdateCommunitySummaryDetails(communityId);
                         request.Community.PriceFrom = tempCommunity.PriceFrom;
-                        request.Community.PriceTo = tempCommunity.PriceFrom;
+                        request.Community.PriceTo = tempCommunity.PriceTo;
                         request.Community.BedFrom = tempCommunity.BedFrom;
                         request.Community.BedTo = tempCommunity.BedTo;
                         request.Community.BathFrom = tempCommunity.BathFrom;
@@ -66,6 +66,8 @@ namespace PropertySolutionHub.Application.Users.CommunityComponent.Handler
                         request.Community.AreaTo = tempCommunity.AreaTo;
                         request.Community.NumberOfUnits = tempCommunity.NumberOfUnits;
 
+                        request.Community.Status = tempCommunity.Status.Name;
+                        request.Community.CommunityType = tempCommunity.CommunityType.Name;
                     }
 
                     string postData = JsonConvert.SerializeObject(request);

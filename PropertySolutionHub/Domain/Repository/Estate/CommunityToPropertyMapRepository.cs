@@ -21,6 +21,7 @@ namespace PropertySolutionHub.Domain.Repository.Estate
         Task<List<CommunityToPropertyMap>> GetAllCommunityToPropertyMaps();
         Task<CommunityToPropertyMap> UpdateCommunityToPropertyMap(CommunityToPropertyMap community);
         Task<Community> UpdateCommunitySummaryDetails(int Id);
+        Task<List<int>> GetPropertyIdListunderCommunity(int Id);
     }
 
     public class CommunityToPropertyMapRepository : AbstractDynamicDbRepository, ICommunityToPropertyMapRepository
@@ -103,7 +104,7 @@ namespace PropertySolutionHub.Domain.Repository.Estate
                     return null;
 
                 List<CommunityToPropertyMap> communityToPropertyMapList = db.CommunityToPropertyMaps
-                    .Where(m => m.CommunityId == Id && m.ArchiveDate == null)
+                    .Where(m => m.CommunityId == Id && m.Property.IsPublished && m.ArchiveDate == null)
                     .Include(m => m.Property)
                     .ToList();
 
@@ -183,6 +184,12 @@ namespace PropertySolutionHub.Domain.Repository.Estate
         public async Task<List<CommunityToPropertyMap>> GetPropertyListForCommunity(int Id)
         {
             return await db.CommunityToPropertyMaps.Where(m => m.CommunityId == Id && m.ArchiveDate == null).ToListAsync();
+        }
+
+        public async Task<List<int>> GetPropertyIdListunderCommunity(int Id)
+        {
+            int communityId = db.Communities.Where(m => m.RemoteId == Id && m.IsPublished && m.ArchiveDate == null).Select(m => m.Id).FirstOrDefault();
+            return await db.CommunityToPropertyMaps.Where(m => m.CommunityId == communityId && m.ArchiveDate == null).Select(m => m.Property.RemoteId).ToListAsync();
         }
     }
 }

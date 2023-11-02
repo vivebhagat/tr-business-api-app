@@ -16,7 +16,7 @@ namespace PropertySolutionHub.Domain.Repository.Estate
         Task<Community> GetCommunityById(int Id);
         Task<List<Community>> GetAllCommunities();
         Task<Community> UpdateCommunity(Community community, IFormFile file);
-        Task<Community> UpdateRemoteCommunity(string postData);
+        Task<bool> UpdateRemoteCommunity(string postData);
         Task<bool> UpdateRemoteId(string postData, int Id);
         Task<List<Community>> GetAllFeaturedCommunities();
     }
@@ -171,10 +171,9 @@ namespace PropertySolutionHub.Domain.Repository.Estate
             return deleted;
         }
 
-        public async Task<Community> UpdateRemoteCommunity(string postData)
+        public async Task<bool> UpdateRemoteCommunity(string postData)
         {
-            var result = await _httpHelper.PostAsync<Community>(postData, DomainKey, "/api/CommunityExternal/EditCommunity");
-            return result;
+            return await _httpHelper.PostAsync<bool>(postData, DomainKey, "/api/CommunityExternal/EditCommunity");
         }
     }
 }
